@@ -58,7 +58,7 @@ router.put('/',(req, res)=>{
     receitaAlterada.nome = nome;
     receitaAlterada.preparo = preparo;
 
-    let filter = 'SELECT * FROM Receita WHERE id ="' + parseInt(req.body.id)+'"';
+    let filter = 'SELECT * FROM RECEITA WHERE id ="' + parseInt(req.body.id)+'"';
     
     toConnectDB.query(filter, (err, rows, fields) => {
         if (!err){

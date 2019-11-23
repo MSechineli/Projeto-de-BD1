@@ -4,7 +4,7 @@ const router = express.Router();
 
 //Buscar categorias
 router.get('/',(req, res) =>{
-    toConnectDB.query('SELECT * FROM CATEGORIA', (err, rows, fields) => {
+    toConnectDB.query('SELECT * FROM CATEGORIA', (err, rows) => {
         if(!err)
             res.send(rows);
         else
@@ -13,8 +13,8 @@ router.get('/',(req, res) =>{
 })
 
 router.get('/id',(req, res)=>{
-    let strBusca = 'SELECT * FROM CATEGORIA WHERE id ="' + req.body.id+'"';
-    con.query(strBusca, (err, rows, fields) => {
+    let strBusca = 'SELECT * FROM CATEGORIA WHERE id ="' + req.body.categoriaid+'"';
+    con.query(strBusca, (err, rows) => {
         if (!err)
             res.send(rows);
         else
@@ -34,9 +34,9 @@ router.post('/',(req, res)=>{
 })
 
 router.delete('/', (req,res)=>{
-    let idRemovido = req.body.id;
+    let idRemovido = req.body.categoriaid;
     console.log(idRemovido);
-    toConnectDB.query('DELETE FROM CATEGORIA WHERE id =' + parseInt(idRemovido), (err, rows)=>{
+    toConnectDB.query('DELETE FROM CATEGORIA WHERE categoriaid =' + parseInt(idRemovido), (err, rows)=>{
         if(!err)
             res.send(rows);
         else
@@ -46,15 +46,15 @@ router.delete('/', (req,res)=>{
 
 router.put('/',(req, res)=>{
     let categoriaAlterada = {};
-    const { id, categoriaNome} = req.body;
-    categoriaAlterada.id = id;
-    categoriaAlterada.nome = categoriaNome;
+    const { categoriaid, categoriaNome} = req.body;
+    categoriaAlterada.id = categoriaid;
+    categoriaAlterada.categoriaNome = categoriaNome;
 
-    let filter = 'SELECT * FROM CATEGORIA WHERE id ="' + parseInt(categoriaAlterada.id)+'"';
+    let filter = 'SELECT * FROM CATEGORIA WHERE categoriaid ="' + parseInt(categoriaAlterada.id)+'"';
     
     toConnectDB.query(filter, (err) => {
         if (!err){
-        let altera = 'UPDATE CATEGORIA SET nome="'+ categoriaAlterada.nome +'"' + ' WHERE id = ' + parseInt(categoriaAlterada.id);
+        let altera = 'UPDATE CATEGORIA SET categoriaNome="'+ categoriaAlterada.categoriaNome +'"' + ' WHERE categoriaid = ' + parseInt(categoriaAlterada.id);
         toConnectDB.query(altera, (err, rows) =>{
             if (!err)
                 res.send(rows);
