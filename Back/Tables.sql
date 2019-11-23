@@ -5,6 +5,6 @@ create table receita(
 );
 
 create table categoria(
-    id INTEGER auto_increment PRIMARY KEY,
+    categoriaid INTEGER auto_increment PRIMARY KEY,
     categoriaNome VARCHAR(200)
 );
