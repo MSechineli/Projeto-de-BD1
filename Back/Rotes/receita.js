@@ -13,6 +13,16 @@ router.get('/',(req, res) =>{
     console.log("passei por aqui");
 })
 
+router.get('/id',(req, res)=>{
+    let strBusca = 'SELECT * FROM RECEITA WHERE id ="' + req.body.id+'"';
+    con.query(strBusca, (err, rows, fields) => {
+        if (!err)
+            res.send(rows);
+        else
+            console.log(err);
+    })
+})
+
 router.post('/',(req, res)=>{
     let novaReceita = {};
     const {id, nome, preparo} = req.body;
@@ -45,19 +55,25 @@ router.put('/',(req, res)=>{
     let receitaAlterada = {};
     const { id, nome, preparo} = req.body;
     receitaAlterada.id = id;
-    receitaAlterada.nroCliente = nome;
-    receitaAlterada.nomeCliente = preparo;
+    receitaAlterada.nome = nome;
+    receitaAlterada.preparo = preparo;
 
-    let filter = '';
-    console.log(req.body);
-    if (req.body) filter = 'UPDATE CLIENTE SET nroCliente=' + parseInt(cliente.nroCliente) + ' , nomeCliente="'+ cliente.nomeCliente + '"' + ' WHERE id = ' + parseInt(cliente.id);
-    console.log(filter);
-    con.query(filter, (err, rows, fields) => {
-        if (!err)
-            res.send(rows);
+    let filter = 'SELECT * FROM Receita WHERE id ="' + parseInt(req.body.id)+'"';
+    
+    toConnectDB.query(filter, (err, rows, fields) => {
+        if (!err){
+        let altera = 'UPDATE RECEITA SET nome="'+ receitaAlterada.nome +'" , preparo="'+ receitaAlterada.preparo + '"' + ' WHERE id = ' + parseInt(receitaAlterada.id);
+        toConnectDB.query(altera, (err, rows, fields) =>{
+            if (!err)
+                res.send(rows);
+            else
+                console.log(err);
+        });
+        }
         else
             console.log(err);
     })
+
 })
 
 module.exports = router;
