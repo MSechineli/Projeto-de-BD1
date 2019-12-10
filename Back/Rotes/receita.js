@@ -14,8 +14,14 @@ router.get('/',(req, res) =>{
 })
 
 router.get('/id',(req, res)=>{
-    let strBusca = 'SELECT * FROM RECEITA WHERE id ="' + req.body.id+'"';
-    con.query(strBusca, (err, rows, fields) => {
+    const id = req.body.id;
+    let filter = `
+    SELECT * 
+    FROM CATEGORIA 
+    WHERE id ="${ parseInt(id) }"`;
+
+    // let strBusca = 'SELECT * FROM RECEITA WHERE id ="' + id +'"';
+    con.query(filter, (err, rows, fields) => {
         if (!err)
             res.send(rows);
         else
@@ -24,15 +30,17 @@ router.get('/id',(req, res)=>{
 })
 
 router.post('/',(req, res)=>{
-    let novaReceita = {};
-    const {id, nome, preparo} = req.body;
-    
-    novaReceita.nome = nome;    
-    novaReceita.preparo = preparo;
+    const {nome, preparo, idCategoria} = req.body;
+    const novaReceita = {nome, preparo, idCategoria};
 
-    const streceita ='INSERT INTO RECEITA(nome, preparo) VALUES ("' + novaReceita.nome + '","'+ novaReceita.preparo +'")';
+    let filter = `
+    INSERT INTO 
+    RECEITA(nome, preparo, idCategoria) 
+    VALUES ("${(novaReceita.nome)}",
+    "${(novaReceita.preparo)}",
+    "${(novaReceita.idCategoria)}")`;
 
-    toConnectDB.query(streceita, (err, rows, fields) => {
+    toConnectDB.query(filter, (err, rows, fields) => {
         if (!err)
             res.send(rows);
         else
@@ -42,8 +50,12 @@ router.post('/',(req, res)=>{
 
 router.delete('/', (req,res)=>{
     let idRemovido = req.body.id;
-    console.log(idRemovido);
-    toConnectDB.query('DELETE FROM RECEITA WHERE id =' + parseInt(idRemovido), (err, rows, fields)=>{
+    let filter = `
+    DELETE 
+    FROM RECEITA 
+    WHERE id ="${ parseInt(idRemovido) }"`;
+    
+    toConnectDB.query(filter, (err, rows, fields)=>{
         if(!err)
             res.send(rows);
         else
@@ -52,28 +64,21 @@ router.delete('/', (req,res)=>{
 })
 
 router.put('/',(req, res)=>{
-    let receitaAlterada = {};
-    const { id, nome, preparo} = req.body;
-    receitaAlterada.id = id;
-    receitaAlterada.nome = nome;
-    receitaAlterada.preparo = preparo;
-
-    let filter = 'SELECT * FROM RECEITA WHERE id ="' + parseInt(req.body.id)+'"';
+    const { id, nome, preparo, idCategoria} = req.body;
+    const receitaAlterada = {id, nome, preparo, idCategoria};
     
-    toConnectDB.query(filter, (err, rows, fields) => {
-        if (!err){
-        let altera = 'UPDATE RECEITA SET nome="'+ receitaAlterada.nome +'" , preparo="'+ receitaAlterada.preparo + '"' + ' WHERE id = ' + parseInt(receitaAlterada.id);
-        toConnectDB.query(altera, (err, rows, fields) =>{
-            if (!err)
-                res.send(rows);
-            else
-                console.log(err);
-        });
-        }
+    let filter = `
+    UPDATE RECEITA SET nome = "${receitaAlterada.nome}",
+    preparo = "${receitaAlterada.preparo}",
+    idCategoria = "${receitaAlterada.idCategoria}"
+    WHERE id ="${ parseInt(receitaAlterada.id) }"`;
+
+    toConnectDB.query(filter, (err, rows, fields) =>{
+        if (!err)
+            res.send(rows);
         else
             console.log(err);
-    })
-
+    });
 })
 
 module.exports = router;

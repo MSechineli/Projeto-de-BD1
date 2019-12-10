@@ -2,7 +2,6 @@ const express = require('express');
 const toConnectDB = require('./connect.js');
 const router = express.Router();
 
-//Buscar categorias
 router.get('/',(req, res) =>{
     toConnectDB.query('SELECT * FROM CATEGORIA', (err, rows) => {
         if(!err)
@@ -13,19 +12,29 @@ router.get('/',(req, res) =>{
 })
 
 router.get('/id',(req, res)=>{
-    let strBusca = 'SELECT * FROM CATEGORIA WHERE id ="' + req.body.categoriaid+'"';
-    con.query(strBusca, (err, rows) => {
+    const id = req.body.id;
+    let filter = `
+    SELECT * 
+    FROM CATEGORIA 
+    WHERE id ="${ parseInt(id) }"`;
+
+    con.query(filter, (err, rows) => {
         if (!err)
             res.send(rows);
         else
+            res.status(400).json({message: 'DEU ERRO NO DELETE'});
             console.log(err);
     })
 })
 
 router.post('/',(req, res)=>{
-    const strNovo ='INSERT INTO CATEGORIA(categoriaNome) VALUES ("' + req.body.categoriaNome + '")';
+    const novoNomeCategoria = req.body.categoriaNome;
+    let filter = `
+    INSERT INTO 
+    CATEGORIA(categoriaNome) 
+    VALUES ("${ (novoNomeCategoria) }")`;
 
-    toConnectDB.query(strNovo, (err, rows) => {
+    toConnectDB.query(filter, (err, rows) => {
         if (!err)
             res.send(rows);
         else
@@ -34,38 +43,38 @@ router.post('/',(req, res)=>{
 })
 
 router.delete('/', (req,res)=>{
-    let idRemovido = req.body.categoriaid;
+    let idRemovido = req.body.id;
     console.log(idRemovido);
-    toConnectDB.query('DELETE FROM CATEGORIA WHERE categoriaid =' + parseInt(idRemovido), (err, rows)=>{
+
+    let filter = `
+    DELETE 
+    FROM CATEGORIA 
+    WHERE id ="${ parseInt(idRemovido) }"`;    
+
+    toConnectDB.query(filter, (err, rows)=>{
         if(!err)
             res.send(rows);
         else
+            res.status(400).json({message: 'DEU ERRO NO DELETE'});
             console.log(err);    
     })
 })
 
 router.put('/',(req, res)=>{
-    let categoriaAlterada = {};
-    const { categoriaid, categoriaNome} = req.body;
-    categoriaAlterada.id = categoriaid;
-    categoriaAlterada.categoriaNome = categoriaNome;
+    const { id, categoriaNome } = req.body;
+    const categoriaAlterada = {id, categoriaNome};
 
-    let filter = 'SELECT * FROM CATEGORIA WHERE categoriaid ="' + parseInt(categoriaAlterada.id)+'"';
+    let filter = `
+    UPDATE CATEGORIA SET 
+    categoriaNome = "${categoriaAlterada.categoriaNome}" 
+    WHERE id ="${ parseInt(categoriaAlterada.id) }"`;
     
-    toConnectDB.query(filter, (err) => {
-        if (!err){
-        let altera = 'UPDATE CATEGORIA SET categoriaNome="'+ categoriaAlterada.categoriaNome +'"' + ' WHERE categoriaid = ' + parseInt(categoriaAlterada.id);
-        toConnectDB.query(altera, (err, rows) =>{
-            if (!err)
-                res.send(rows);
-            else
-                console.log(err);
-        });
-        }
+    toConnectDB.query(filter, (err, rows) =>{
+        if (!err)
+            res.send(rows);
         else
             console.log(err);
-    })
-
+    });
 })
 
 module.exports = router;

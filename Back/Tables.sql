@@ -1,10 +1,16 @@
-create table receita(
-	id INTEGER auto_increment PRIMARY KEY,
-    nome VARCHAR(200),
-    preparo VARCHAR(200)
+DROP TABLE RECEITA;
+DROP TABLE CATEGORIA;
+
+
+CREATE TABLE CATEGORIA(
+    categoriaNome VARCHAR(200) PRIMARY KEY
 );
 
-create table categoria(
-    categoriaid INTEGER auto_increment PRIMARY KEY,
-    categoriaNome VARCHAR(200)
+CREATE TABLE RECEITA(
+	id INTEGER auto_increment,
+    nome VARCHAR(200),
+    PRIMARY KEY(id, categoriaNome),
+    preparo VARCHAR(200),
+    categoriaNome VARCHAR(200),
+    FOREIGN KEY (categoriaNome) REFERENCES categoria(categoriaNome)
 );
