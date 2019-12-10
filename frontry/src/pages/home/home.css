@@ -1,0 +1,16 @@
+.layout {
+    width: 2000px;
+    height: 1000px;
+    background: rgba(216, 74, 74, 0.2);
+    float: left;
+}
+h1{
+    text-align: center;
+    color:rgb(255, 255, 255)
+};
+.header{
+
+}
+
+.sider{
+}
