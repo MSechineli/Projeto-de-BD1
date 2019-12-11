@@ -1,16 +1,14 @@
-.layout {
-    width: 2000px;
-    height: 1000px;
-    background: rgba(216, 74, 74, 0.2);
-    float: left;
-}
-h1{
-    text-align: center;
-    color:rgb(255, 255, 255)
-};
-.header{
-
+.logo {
+    height: 32px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 16px;
 }
 
-.sider{
+.body {
+    height: 100vh;
+}
+
+.innerBody {
+    min-height: calc(100vh - 112px);
+    /* display: flex; */
 }
